@@ -1,0 +1,197 @@
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: #f0f2f5;
+    /* Added a gradient to make the blur effect visible */
+    background: linear-gradient(to right top, #65dfc9, #6cdbeb);
+    /* The background is now handled by the video element */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden; /* Prevent scrolling on all devices */
+}
+
+#video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1; /* Place it behind all other content */
+}
+
+#video-background iframe {
+    /* Position the iframe to cover the entire background */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 56.25vw; /* 16:9 aspect ratio */
+    min-height: 100vh;
+    min-width: 177.77vh; /* 16:9 aspect ratio for 100vh height */
+    transform: translate(-50%, -50%);
+    pointer-events: none; /* Make it unclickable */
+}
+
+.profile-container {
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px); /* For Safari */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 30px;
+    text-align: center;
+    width: 320px;
+    /* Enable 3D space for children and set a smooth transition */
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease;
+    will-change: transform; /* Performance optimization */
+}
+
+.profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+    /* Pop the image out in 3D space */
+    transform: translateZ(40px);
+    border: 3px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.profile-name {
+    font-size: 1.5rem; /* 24px */
+    color: transparent;
+    margin: 0;
+    /* Pop the name out in 3D space */
+    transform: translateZ(20px);
+    -webkit-text-stroke: 1px white;
+}
+
+/* New style for the password label */
+.password-label {
+    font-size: 0.8rem; /* 12.8px */
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 25px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    /* Pop the label out to match the inputs */
+    transform: translateZ(30px);
+    text-align: left;
+}
+
+/* Password Input Styles */
+.password-container {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    /* Pop the inputs out in 3D space */
+    transform: translateZ(30px);
+}
+
+.password-input {
+    width: 30px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1.1rem;
+    color: white;
+    caret-color: white; /* Make the typing cursor visible */
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.password-input:focus {
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Shake animation for wrong password */
+/* This animation moves the card wildly around the center of the screen */
+@keyframes shake {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  15% { transform: translate(-25%, 10%) rotate(-5deg); }
+  30% { transform: translate(20%, -20%) rotate(3deg); }
+  45% { transform: translate(-15%, 15%) rotate(-3deg); }
+  60% { transform: translate(10%, -10%) rotate(2deg); }
+  75% { transform: translate(-5%, 5%) rotate(-1deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.shake {
+  /* Apply the shake animation, keeping the perspective */
+  animation: shake 1s cubic-bezier(.36,.07,.19,.97) both;
+  transform-style: preserve-3d;
+}
+
+/* Style for the wrong password message */
+.wrong-password-msg {
+    color: #ff5c5c;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 0;
+    height: 0; /* Set height to 0 when hidden */
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s linear, height 0.2s ease-in-out, margin-top 0.2s ease-in-out;
+    transform: translateZ(30px); /* Keep it in the 3D plane */
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Add shadow for readability */
+}
+
+/* Style for the success password message */
+.success-password-msg {
+    color: rgba(255, 255, 255, 0.8); /* Semi-transparent white for a glassy look */
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 0;
+    height: 0; /* Set height to 0 when hidden */
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s linear, height 0.2s ease-in-out, margin-top 0.2s ease-in-out;
+    transform: translateZ(30px); /* Keep it in the 3D plane */
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+
+/* Mute Button Styles */
+.mute-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 50px;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    z-index: 10;
+}
+
+.mute-btn:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.1);
+}
+
+.mute-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: #111827;
+}
+
+/* Responsive adjustments for mobile view */
+@media (max-width: 480px) {
+    .profile-container {
+        width: calc(80% - 40px); /* Ensures 20px of space on the left and right */
+        margin-bottom: 10vh; /* Pushes the card up from the bottom */
+    }
+}

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- The 'head' contains metadata and links to other files -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keshx_c </title>
+    
+    <!-- This line is important: it links your CSS file to style the page -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- This div will hold the background video -->
+    <div id="video-background">
+        <video autoplay muted loop src="anime.mp4" id="bg-video"></video>
+    </div>
+
+    <!-- The 'body' contains the visible content of your page -->
+
+    <!-- A container to hold and center the profile elements -->
+    <div class="profile-container">
+    
+        <!-- The profile image. You can change the 'src' to your own image URL -->
+        <img src="https://www.mygreatlearning.com/blog/wp-content/uploads/2020/10/shutterstock_1096975310.jpg.webp" alt="Profile Picture" class="profile-image">
+        
+        <!-- The heading for the user's name -->
+        <h1 class="profile-name">Keshav Pal</h1>
+
+        <!-- Label for the password section -->
+        <p class="password-label">Enter Password</p>
+
+        <!-- Container for the password input boxes -->
+        <div class="password-container" id="password-container">
+            <input type="password" class="password-input" maxlength="1" data-index="0">
+            <input type="password" class="password-input" maxlength="1" data-index="1">
+            <input type="password" class="password-input" maxlength="1" data-index="2">
+            <input type="password" class="password-input" maxlength="1" data-index="3">
+            <input type="password" class="password-input" maxlength="1" data-index="4">
+            <input type="password" class="password-input" maxlength="1" data-index="5">
+        </div>
+
+        <!-- Error message for wrong password -->
+        <p class="wrong-password-msg" id="wrong-password-msg">Wrong Password. Try Again!!</p>
+
+        <!-- Success message for correct password -->
+        <p class="success-password-msg" id="success-password-msg">Redirecting to Instagram...</p>
+        
+    </div>
+
+    <!-- Mute/Unmute Button -->
+    <button id="mute-toggle" class="mute-btn">
+        <svg class="icon-muted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display: none;">
+            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+        </svg>
+        <svg class="icon-unmuted" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.28 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+        </svg>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 3D Card Tilt Logic ---
+            const card = document.querySelector('.profile-container');
+            if (card) {
+                card.addEventListener('mousemove', (e) => {
+                    // Use requestAnimationFrame for smoother animations
+                    window.requestAnimationFrame(() => {
+                        const { left, top, width, height } = card.getBoundingClientRect();
+                        const x = e.clientX - left;
+                        const y = e.clientY - top;
+                        const rotateX = (y / height - 0.5) * -30;
+                        const rotateY = (x / width - 0.5) * 30;
+                        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    });
+                });
+    
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+                });
+            }
+
+            // --- Mute Toggle Logic ---
+            const muteButton = document.getElementById('mute-toggle');
+            const video = document.getElementById('bg-video');
+            if (muteButton && video) {
+                const iconMuted = muteButton.querySelector('.icon-muted');
+                const iconUnmuted = muteButton.querySelector('.icon-unmuted');
+
+                muteButton.addEventListener('click', () => {
+                    if (video.muted) {
+                        video.muted = false;
+                        iconMuted.style.display = 'none';
+                        iconUnmuted.style.display = 'block';
+                    } else {
+                        video.muted = true;
+                        iconMuted.style.display = 'block';
+                        iconUnmuted.style.display = 'none';
+                    }
+                });
+
+                // Sync button state with video state on load
+                if (video.muted) {
+                    iconMuted.style.display = 'block';
+                    iconUnmuted.style.display = 'none';
+                } else {
+                    iconMuted.style.display = 'none';
+                    iconUnmuted.style.display = 'block';
+                }
+
+                // The video may not be ready to play immediately.
+                // We'll try to play it and catch any errors.
+                video.play().catch(error => {
+                    console.log("Autoplay was prevented. User interaction is needed to start the video.", error);
+                    // On some browsers, we need a user interaction to play audio.
+                    // The mute button click will handle unmuting and playing.
+                    document.body.addEventListener('click', () => {
+                        video.play();
+                    }, { once: true });
+                });
+            }
+
+            // --- Password Logic ---
+            const passwordContainer = document.getElementById('password-container');
+            const inputs = [...passwordContainer.querySelectorAll('.password-input')];
+            const correctPassword = "keshav";
+            const wrongPasswordMsg = document.getElementById('wrong-password-msg');
+
+            const successPasswordMsg = document.getElementById('success-password-msg');
+
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', () => {
+                    // If a character is entered, focus the next input
+                    if (input.value.length === 1 && index < inputs.length - 1) {
+                        // Clear any previous messages
+                        wrongPasswordMsg.style.opacity = 0;
+                        successPasswordMsg.style.opacity = 0;
+
+                        inputs[index + 1].focus();
+                    }
+                    checkPassword();
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    // If backspace is pressed on an empty input, focus the previous one
+                    if (e.key === 'Backspace' && input.value.length === 0 && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+
+                // Handle pasting password
+                input.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    const pasteData = e.clipboardData.getData('text');
+                    if (pasteData.length === inputs.length) {
+                        inputs.forEach((box, i) => {
+                            box.value = pasteData[i] || '';
+                        });
+                        checkPassword();
+                    }
+                });
+            });
+
+            function checkPassword() {
+                const enteredPassword = inputs.map(input => input.value).join('').toLowerCase();
+                // Only check when all 6 characters are entered
+                if (enteredPassword.length === inputs.length) {
+                    // Hide wrong password message if it was visible
+                    wrongPasswordMsg.style.opacity = 0;
+
+                    if (enteredPassword === "keshav") {
+                        successPasswordMsg.style.height = '18px';
+                        successPasswordMsg.style.marginTop = '15px';
+                        successPasswordMsg.style.opacity = 1;
+                        setTimeout(() => window.location.href = 'https://www.instagram.com/keshx_c', 1000);
+                    } else if (enteredPassword === "karton") {
+                        successPasswordMsg.innerText = "Redirecting...";
+                        successPasswordMsg.style.height = '18px';
+                        successPasswordMsg.style.marginTop = '15px';
+                        successPasswordMsg.style.opacity = 1;
+                        setTimeout(() => window.location.href = 'instagram.com.html', 1000);
+                    } else {
+                        // Wrong password: Shake the card and show message
+                        card.classList.add('shake');
+                        wrongPasswordMsg.style.height = '18px';
+                        wrongPasswordMsg.style.marginTop = '15px';
+                        wrongPasswordMsg.style.opacity = 1;
+
+                        // Clear inputs after a short delay
+                        setTimeout(() => {
+                            inputs.forEach(input => input.value = '');
+                            inputs[0].focus();
+                        }, 500);
+
+                        // Remove the shake class and hide message after animation
+                        card.addEventListener('animationend', () => {
+                            card.classList.remove('shake');
+                            wrongPasswordMsg.style.height = '0';
+                            wrongPasswordMsg.style.marginTop = '0';
+                            wrongPasswordMsg.style.opacity = 0;
+                        }, { once: true });
+                    }
+                }
+            }
+
+            // --- Fullscreen on First Interaction for Mobile ---
+            function handleFirstInteraction() {
+                // Check if it's likely a mobile device before requesting fullscreen
+                if (window.innerWidth <= 768) {
+                    const elem = document.documentElement;
+                    if (elem.requestFullscreen) {
+                        elem.requestFullscreen().catch(err => console.error(`Fullscreen error: ${err.message}`));
+                    } else if (elem.webkitRequestFullscreen) { /* Safari */
+                        elem.webkitRequestFullscreen();
+                    } else if (elem.msRequestFullscreen) { /* IE11 */
+                        elem.msRequestFullscreen();
+                    }
+                }
+            }
+
+            // Listen for the first click or touch, then remove the listener
+            document.addEventListener('click', handleFirstInteraction, { once: true });
+            document.addEventListener('touchstart', handleFirstInteraction, { once: true });
+        });
+    </script>
+</body>
+</html>
