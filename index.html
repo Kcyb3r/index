@@ -127,6 +127,23 @@
 
             const successPasswordMsg = document.getElementById('success-password-msg');
 
+            function clearPasswordFields() {
+                inputs.forEach(input => input.value = '');
+                if (inputs.length > 0) {
+                    inputs[0].focus();
+                }
+            }
+
+            // Clear fields on initial load
+            clearPasswordFields();
+
+            // Also clear fields when the page is shown from the back-forward cache
+            window.addEventListener('pageshow', (event) => {
+                if (event.persisted) {
+                    clearPasswordFields();
+                }
+            });
+
             inputs.forEach((input, index) => {
                 input.addEventListener('input', () => {
                     // If a character is entered, focus the next input
